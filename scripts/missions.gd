@@ -43,7 +43,7 @@ func start(new_game = true) -> void:
 	_show_stage()
 
 func _process(delta: float) -> void:
-	if not active or completed or game == null:
+	if not active or completed or game == null or game.player == null:
 		return
 	if timer > 0:
 		timer -= delta
