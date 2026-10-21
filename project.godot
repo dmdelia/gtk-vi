@@ -1,0 +1,36 @@
+; KARTON EU IV - original industrial sandbox
+config_version=5
+
+[application]
+config/name="KARTON EU IV"
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.4", "GL Compatibility")
+
+[display]
+window/size/viewport_width=1600
+window/size/viewport_height=900
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false
+anti_aliasing/quality/msaa_3d=2
+
+[physics]
+3d/default_gravity=20.0
+
+[input]
+move_forward={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":87)]}
+move_back={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":83)]}
+move_left={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":65)]}
+move_right={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":68)]}
+sprint={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":4194325)]}
+sneak={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":4194326)]}
+jump={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":32)]}
+interact={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":69)]}
+vehicle_action={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":82)]}
+map={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":77)]}
+flashlight={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":70)]}
