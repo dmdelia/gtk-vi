@@ -128,7 +128,7 @@ func _build() -> void:
 			box(Vector3(x,1.6,z), Vector3(0.11,3.2,0.2), "#bac6c3")
 	for x in [-155.0, 155.0]:
 		for z in range(-116,120,9):
-			if 11 < z < 36 and x < 0:
+			if z > 11 and z < 36 and x < 0:
 				continue
 			box(Vector3(x,1.7,z), Vector3(0.18,3.4,8.5), "#8b999c", false)
 	for building in BLOCKS:
