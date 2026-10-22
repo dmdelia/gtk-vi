@@ -6,6 +6,7 @@ var expanded = false
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	clip_contents = true
 	set_process(true)
 
 func _process(_delta: float) -> void:

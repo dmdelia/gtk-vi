@@ -1,4 +1,5 @@
 extends CharacterBody3D
+const V = preload("res://scripts/visuals.gd")
 ## Third-person avatar. All geometry is generated at runtime.
 
 var game
@@ -28,14 +29,28 @@ func _ready() -> void:
 	shape.shape = capsule
 	shape.position.y = 1.15
 	add_child(shape)
-	var outfit = _mat(Color("28394b"))
-	hoodie = _part(Vector3(0.0, 1.37, 0.0), Vector3(0.82, 0.98, 0.43), outfit)
-	_part(Vector3(0, 2.08, 0), Vector3(0.42, 0.48, 0.43), _mat(Color("efc7a1")))
-	_part(Vector3(0, 2.32, -0.015), Vector3(0.47, 0.18, 0.44), _mat(Color("231e26")))
-	left_leg = _part(Vector3(-0.22, 0.49, 0), Vector3(0.29, 0.95, 0.32), _mat(Color("151922")))
-	right_leg = _part(Vector3(0.22, 0.49, 0), Vector3(0.29, 0.95, 0.32), _mat(Color("151922")))
-	_part(Vector3(-0.57, 1.38, 0), Vector3(0.29, 0.85, 0.29), outfit)
-	_part(Vector3(0.57, 1.38, 0), Vector3(0.29, 0.85, 0.29), outfit)
+	var outfit = V.material("fabric", Color("#354c69"))
+	var denim = V.material("fabric", Color("#343e4b"))
+	var skin = V.plain(Color("#d4ad8b"),0,.8)
+	var shoes = V.material("rubber",Color("#272a31"))
+	# Rounded cloth silhouette with 3D sleeves, seam piping and articulated legs.
+	hoodie = V.capsule(self,Vector3(0,1.43,0),.39,.94,outfit,18)
+	V.sphere(self,Vector3(0,2.08,0),Vector3(.46,.53,.41),skin,20)
+	V.sphere(self,Vector3(0,2.36,.02),Vector3(.5,.22,.46),V.material("fabric",Color("#302c38")),20)
+	V.cuboid(self,Vector3(0,1.11,-.30),Vector3(.6,.055,.025),V.material("steel",Color("#606e7b")))
+	V.capsule(self,Vector3(-.58,1.4,-.01),.15,.88,outfit)
+	V.capsule(self,Vector3(.58,1.4,-.01),.15,.88,outfit)
+	V.sphere(self,Vector3(-.57,.98,-.04),Vector3(.29,.27,.25),skin)
+	V.sphere(self,Vector3(.57,.98,-.04),Vector3(.29,.27,.25),skin)
+	left_leg=V.capsule(self,Vector3(-.20,.56,0),.17,.95,denim)
+	right_leg=V.capsule(self,Vector3(.20,.56,0),.17,.95,denim)
+	V.sphere(self,Vector3(-.20,.12,-.12),Vector3(.36,.21,.57),shoes)
+	V.sphere(self,Vector3(.20,.12,-.12),Vector3(.36,.21,.57),shoes)
+	# Face detail rather than an untextured block.
+	for side in [-1,1]:
+		V.sphere(self,Vector3(float(side)*.13,2.12,-.20),Vector3(.065,.055,.035),V.plain(Color("#252323")))
+	V.sphere(self,Vector3(0,2.01,-.224),Vector3(.065,.09,.11),skin)
+	V.cuboid(self,Vector3(0,1.9,-.207),Vector3(.17,.025,.021),V.plain(Color("#83544d")))
 	light = SpotLight3D.new()
 	light.position = Vector3(0, 2.08, -0.2)
 	light.rotation_degrees.x = -18

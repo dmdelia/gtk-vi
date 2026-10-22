@@ -170,13 +170,16 @@ func build_hud() -> void:
 	map_back.anchor_bottom = 0.97
 	map_back.add_theme_stylebox_override("panel",_style(Color("#182630"),Color("#779096"),7))
 	hud.add_child(map_back)
+	map_back.clip_contents = true  # Godot scissor-clips all minimap marks to the frame.
 	map_small = MAP_SCRIPT.new()
 	map_small.game = game
-	map_small.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	map_small.clip_contents = true
 	map_back.add_child(map_small)
+	map_small.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	map_large = MAP_SCRIPT.new()
 	map_large.game = game
 	map_large.expanded = true
+	map_large.clip_contents = true
 	map_large.anchor_left = 0.19
 	map_large.anchor_right = 0.81
 	map_large.anchor_top = 0.13

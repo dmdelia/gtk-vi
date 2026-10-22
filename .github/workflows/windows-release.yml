@@ -21,6 +21,13 @@ jobs:
           include-templates: true
       - name: Godot version
         run: godot --version
+      - name: Generate original bitmap PBR assets
+        run: |
+          python3 -m pip install --quiet pillow numpy
+          python3 tools/generate_textures.py
+          test -s assets/textures/asphalt_albedo.png
+          test -s assets/textures/sheetmetal_normal.png
+          test -s assets/textures/cardboard_roughness.png
       - name: Import and check scripts
         run: |
           godot --headless --editor --path . --import --quit 2>&1 | tee /tmp/godot-import.log
@@ -36,6 +43,15 @@ jobs:
           godot --headless --path . --export-release "Windows Desktop" build/windows/KARTON-EU-IV.exe
           test -s build/windows/KARTON-EU-IV.exe
           test -s build/windows/KARTON-EU-IV.pck
+      - name: Save generated PBR textures to repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f assets/textures/*.png
+          if ! git diff --cached --quiet; then
+            git commit -m "assets: add 36 original game-ready PBR texture maps"
+            git push origin HEAD:main
+          fi
       - name: Package full standalone Windows build
         run: |
           cd build/windows
@@ -52,8 +68,8 @@ jobs:
             VERSION="${GITHUB_REF_NAME}"
             EXTRA_FLAGS="--verify-tag"
           else
-            VERSION="v0.1.1-prealpha"
-            EXTRA_FLAGS="--prerelease --target ${GITHUB_SHA}"
+            VERSION="v0.1.2-prealpha"
+            EXTRA_FLAGS="--prerelease --target $(git rev-parse HEAD)"
           fi
           if gh release view "$VERSION" >/dev/null 2>&1; then
             gh release upload "$VERSION" KARTON-EU-IV-windows.zip --clobber

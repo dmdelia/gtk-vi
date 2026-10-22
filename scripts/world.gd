@@ -1,4 +1,5 @@
 extends Node3D
+const Visuals = preload("res://scripts/visuals.gd")
 ## Texture-overhauled industrial yard inspired by the real karton.eu logistics footprint in Spremberg.
 ## The northern part contains the long hall blocks, while parking, administration and service sit south/front.
 
@@ -37,174 +38,54 @@ func _style_material(style: String, transparent = false) -> StandardMaterial3D:
 	var key = "%s|%s" % [style, transparent]
 	if materials.has(key):
 		return materials[key]
-	var m = StandardMaterial3D.new()
-	m.roughness = 0.84
-	m.metallic = 0.0
-	m.uv1_triplanar = true
-	m.uv1_scale = Vector3(3.0, 3.0, 3.0)
-	if transparent:
-		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	var m: StandardMaterial3D
 	match style:
-		"asphalt":
-			m.albedo_texture = _pattern_texture("asphalt", "#545b61", "#262b2f", 160)
-			m.roughness = 0.96
-			m.uv1_scale = Vector3(12, 12, 12)
-		"road_marked":
-			m.albedo_texture = _pattern_texture("asphalt", "#494f55", "#23272a", 160)
-			m.roughness = 0.96
-			m.uv1_scale = Vector3(14, 14, 14)
-		"concrete":
-			m.albedo_texture = _pattern_texture("speckle", "#b9b7af", "#8c8980", 160)
-			m.roughness = 0.94
-			m.uv1_scale = Vector3(9, 9, 9)
-		"polished_concrete":
-			m.albedo_texture = _pattern_texture("speckle", "#c9c5bb", "#9f9a90", 160)
-			m.roughness = 0.68
-			m.uv1_scale = Vector3(10, 10, 10)
+		"asphalt", "road_marked":
+			m = Visuals.material("asphalt", Color("#dddfe1") if style == "asphalt" else Color("#acb4b9"))
+		"concrete", "polished_concrete":
+			m = Visuals.material("concrete", Color.WHITE if style == "concrete" else Color("#d6d6d0"))
 		"hall_blue":
-			m.albedo_texture = _pattern_texture("cladding", "#6e8da2", "#44606e", 256)
-			m.roughness = 0.58
-			m.metallic = 0.28
-			m.uv1_scale = Vector3(4.2, 4.2, 4.2)
+			m = Visuals.material("sheetmetal", Color("#869cb1"))
 		"hall_grey":
-			m.albedo_texture = _pattern_texture("cladding", "#9ca2a5", "#5f666b", 256)
-			m.roughness = 0.58
-			m.metallic = 0.24
-			m.uv1_scale = Vector3(4.2, 4.2, 4.2)
+			m = Visuals.material("sheetmetal", Color("#acb2b6"))
 		"hall_sand":
-			m.albedo_texture = _pattern_texture("cladding", "#c1b58f", "#7d7157", 256)
-			m.roughness = 0.6
-			m.metallic = 0.18
-			m.uv1_scale = Vector3(4.0, 4.0, 4.0)
+			m = Visuals.material("sheetmetal", Color("#ceb99c"))
 		"warehouse_dark":
-			m.albedo_texture = _pattern_texture("cladding", "#7d746a", "#514942", 256)
-			m.roughness = 0.63
-			m.metallic = 0.22
-			m.uv1_scale = Vector3(3.8, 3.8, 3.8)
+			m = Visuals.material("sheetmetal", Color("#8a857e"))
 		"office_white":
-			m.albedo_texture = _pattern_texture("cladding", "#d9ddd7", "#9fa59d", 256)
-			m.roughness = 0.66
-			m.uv1_scale = Vector3(3.4, 3.4, 3.4)
+			m = Visuals.material("brick", Color("#d8e2e5"))
 		"office_sage":
-			m.albedo_texture = _pattern_texture("cladding", "#acb59d", "#6b7361", 256)
-			m.roughness = 0.66
-			m.uv1_scale = Vector3(3.4, 3.4, 3.4)
+			m = Visuals.material("brick", Color("#a3b6a5"))
 		"workshop_red":
-			m.albedo_texture = _pattern_texture("cladding", "#b17567", "#72463b", 256)
-			m.roughness = 0.62
-			m.uv1_scale = Vector3(3.7, 3.7, 3.7)
+			m = Visuals.material("brick", Color("#bf9790"))
 		"shipping_grey":
-			m.albedo_texture = _pattern_texture("cladding", "#9aa1a8", "#636b72", 256)
-			m.roughness = 0.6
-			m.uv1_scale = Vector3(4.1, 4.1, 4.1)
+			m = Visuals.material("sheetmetal", Color("#a6b1bd"))
 		"roof_light":
-			m.albedo_texture = _pattern_texture("roof", "#c2c7ca", "#8a8f95", 256)
-			m.roughness = 0.72
-			m.metallic = 0.18
-			m.uv1_scale = Vector3(5.2, 5.2, 5.2)
+			m = Visuals.material("roof", Color("#e0e5ec"))
 		"roof_dark":
-			m.albedo_texture = _pattern_texture("roof", "#70767b", "#43484c", 256)
-			m.roughness = 0.72
-			m.metallic = 0.2
-			m.uv1_scale = Vector3(5.2, 5.2, 5.2)
-		"glass":
-			m.albedo_texture = _pattern_texture("window", "#7bb7da88", "#21384622", 128)
-			m.roughness = 0.1
-			m.metallic = 0.0
-			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-			m.uv1_scale = Vector3(2.2, 2.2, 2.2)
-		"galvanized":
-			m.albedo_texture = _pattern_texture("speckle", "#c9cfce", "#7e8887", 128)
-			m.roughness = 0.52
-			m.metallic = 0.44
-			m.uv1_scale = Vector3(7.5, 7.5, 7.5)
+			m = Visuals.material("roof", Color("#919ba7"))
+		"galvanized", "painted_steel":
+			m = Visuals.material("steel")
 		"hazard":
-			m.albedo_texture = _pattern_texture("hazard", "#e3b83c", "#211c15", 128)
-			m.roughness = 0.64
-			m.uv1_scale = Vector3(3.5, 3.5, 3.5)
+			m = Visuals.material("hazard")
 		"cardboard":
-			m.albedo_texture = _pattern_texture("cardboard", "#caa269", "#8f6937", 256)
-			m.roughness = 0.92
-			m.uv1_scale = Vector3(5.0, 5.0, 5.0)
+			m = Visuals.material("cardboard")
 		"wood":
-			m.albedo_texture = _pattern_texture("wood", "#b98a58", "#714927", 256)
-			m.roughness = 0.86
-			m.uv1_scale = Vector3(6.0, 6.0, 6.0)
+			m = Visuals.material("wood")
 		"machine_teal":
-			m.albedo_texture = _pattern_texture("machine", "#7aa49d", "#466c69", 128)
-			m.roughness = 0.48
-			m.metallic = 0.42
-			m.uv1_scale = Vector3(3.2, 3.2, 3.2)
-		"painted_steel":
-			m.albedo_texture = _pattern_texture("machine", "#717d84", "#39454d", 128)
-			m.roughness = 0.44
-			m.metallic = 0.52
-			m.uv1_scale = Vector3(3.5, 3.5, 3.5)
+			m = Visuals.material("machine")
+		"glass":
+			m = Visuals.plain(Color("#8cc4d0a0"), 0.05, 0.07)
+			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		_:
-			if style.begins_with("#"):
-				m.albedo_color = Color(style)
-			else:
-				m.albedo_color = Color("#808890")
+			m = Visuals.plain(Color(style) if style.begins_with("#") else Color("#808890"))
+			if style.begins_with("#") and Color(style).a < 1.0:
+				m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	if transparent and m.transparency != BaseMaterial3D.TRANSPARENCY_ALPHA:
+		m = m.duplicate()
+		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	materials[key] = m
 	return m
-
-func _pattern_texture(kind: String, c1: String, c2: String, size = 128) -> Texture2D:
-	var key = "%s|%s|%s|%d" % [kind, c1, c2, size]
-	if texture_cache.has(key):
-		return texture_cache[key]
-	var img = Image.create(size, size, false, Image.FORMAT_RGBA8)
-	var a = Color(c1)
-	var b = Color(c2)
-	for y in range(size):
-		for x in range(size):
-			var px = a
-			match kind:
-				"asphalt":
-					var n = float(((x * 17 + y * 31 + x * y) % 37)) / 37.0
-					px = a.lerp(b, 0.28 + n * 0.22)
-					if ((x + y * 2) % 53) == 0:
-						px = px.lightened(0.12)
-				"speckle":
-					var s = float(((x * 11 + y * 19 + x * y * 3) % 29)) / 29.0
-					px = a.lerp(b, s * 0.35)
-					if ((x + y) % 41) == 0:
-						px = px.darkened(0.15)
-				"cladding":
-					var band = 1.0 if (y % 18) < 2 else 0.0
-					var stain = float(((x * 3 + y * 5) % 17)) / 17.0
-					px = a.lerp(b, 0.18 + stain * 0.12 + band * 0.35)
-				"roof":
-					var rib = 1.0 if (x % 22) < 3 else 0.0
-					var dirt = float(((x * 5 + y * 7) % 23)) / 23.0
-					px = a.lerp(b, 0.2 + dirt * 0.13 + rib * 0.28)
-				"window":
-					var mullion = ((x % 28) < 2) or ((y % 28) < 2)
-					px = b if mullion else a
-					if not mullion and (x + y) % 47 < 2:
-						px = px.lightened(0.12)
-				"hazard":
-					var stripe = int(floor(float(x + y) / 18.0)) % 2 == 0
-					px = a if stripe else b
-				"cardboard":
-					var corr = 1.0 if (x % 14) < 3 else 0.0
-					var wear = float(((x * 7 + y * 13) % 19)) / 19.0
-					px = a.lerp(b, 0.14 + wear * 0.09 + corr * 0.22)
-				"wood":
-					var grain = (sin(float(x) * 0.14) + sin(float(x) * 0.05 + float(y) * 0.04)) * 0.5 + 0.5
-					px = a.lerp(b, grain * 0.45)
-					if (y % 59) == 0:
-						px = px.darkened(0.18)
-				"machine":
-					var edge = 1.0 if (x % 29) < 2 or (y % 25) < 2 else 0.0
-					var smudge = float(((x * 9 + y * 4) % 31)) / 31.0
-					px = a.lerp(b, smudge * 0.3 + edge * 0.22)
-				_:
-					px = a
-			img.set_pixel(x, y, px)
-	img.generate_mipmaps()
-	var tex = ImageTexture.create_from_image(img)
-	texture_cache[key] = tex
-	return tex
 
 func box(pos: Vector3, dim: Vector3, style = "concrete", solid = true, parent: Node3D = null, _metal = 0.0) -> Node3D:
 	var root: Node3D
@@ -296,6 +177,49 @@ func _building(info: Dictionary) -> void:
 		for j in [-1, 1]:
 			box(Vector3(x + i * (w * 0.5 - 2.2), 5.4, z + j * (d * 0.5 - 2.2)), Vector3(0.7, 10.8, 0.7), "hazard")
 	sign_text(str(info.name), Vector3(x, 8.0, z + d * 0.5 + 0.76), 0.5, Color("#ffd488"))
+
+func _industrial_details() -> void:
+	# Steel exhaust stacks, rooftop ventilators, rainwater pipes and visible machinery.
+	var metal = _style_material("galvanized")
+	var frame = _style_material("painted_steel")
+	var rubber = Visuals.material("rubber")
+	for info in BLOCKS:
+		var x: float = info.x
+		var z: float = info.z
+		var w: float = info.w
+		var d: float = info.d
+		for side in [-1, 1]:
+			var side_x = x + side * (w * .5 + .25)
+			Visuals.pipe_between(self, Vector3(side_x, 10.6, z-d*.38), Vector3(side_x, .4, z-d*.38), .13, metal)
+			Visuals.pipe_between(self, Vector3(side_x, 10.6, z+d*.38), Vector3(side_x, .4, z+d*.38), .13, metal)
+		for i in range(3):
+			var xx = x + float(i-1) * w * .23
+			Visuals.cylinder(self, Vector3(xx, 11.2, z-d*.12), .77, .55, frame, 18)
+			Visuals.cylinder(self, Vector3(xx, 11.5, z-d*.12), 1.02, .12, metal, 18)
+			Visuals.cylinder(self, Vector3(xx, 11.64, z-d*.12), .55, .16, rubber, 18)
+		# Exterior trapezoid roof-end braces and gutters.
+		for side in [-1, 1]:
+			Visuals.pipe_between(self,Vector3(x-w*.48,10.9,z+side*d*.5),Vector3(x+w*.48,10.9,z+side*d*.5),.12,metal)
+		# Loading dock anti-collision bollards on the industrial halls.
+		if str(info.name).begins_with("HALLE") or str(info.name) == "VERSAND":
+			for i in range(4):
+				var bollard_x = x + (float(i)-1.5)*w*.21
+				Visuals.cylinder(self,Vector3(bollard_x,.6,z+d*.5+2.0),.15,1.2,_style_material("hazard"),12)
+	# Working air-conditioning machinery, pumps and compressed-air manifolds.
+	for station in [Vector3(-107,0,-55),Vector3(-44,0,-54),Vector3(25,0,-54),Vector3(-33,0,21)]:
+		Visuals.cylinder(self, station+Vector3(0,1.55,0), .85, 2.4, metal, 20)
+		for h in [.8,1.65,2.3]:
+			Visuals.cylinder(self,station+Vector3(0,h,0),.89,.08,frame,20)
+		Visuals.pipe_between(self,station+Vector3(0,2.8,0),station+Vector3(2.0,2.8,0),.15,metal)
+		Visuals.pipe_between(self,station+Vector3(2,2.8,0),station+Vector3(2,1.1,0),.15,metal)
+	# Cargo terminal pallets with plank top and skids: visible real geometry.
+	for i in range(8):
+		var px = 60.0 + (i % 4) * 10.5
+		var pz = 69.0 + (i / 4) * 8.0
+		for k in range(3):
+			Visuals.cuboid(self,Vector3(px,0.17,pz+(k-1)*.7),Vector3(2.6,.18,.55),_style_material("wood"))
+		for k in [-1,1]:
+			Visuals.cuboid(self,Vector3(px+k*.83,.08,pz),Vector3(.31,.2,2.4),_style_material("wood"))
 
 func _yard_lines(z_line: float, length: int, color_style: String) -> void:
 	for x in range(-148, length, 11):
@@ -425,6 +349,7 @@ func _build() -> void:
 	sign_text("KARTON EU IV", Vector3(0, 14, 117), 1.9, Color("#efd598"))
 	sign_text("TUCHMACHERALLEE \u2502 WERKSZUFAHRT \u2502 20 km/h", Vector3(-2, 4, 112), 0.6)
 	sign_text("TEXTURE OVERHAUL \u2502 LAYOUT NACH LOGISTIK-FOOTPRINT", Vector3(-77, 4, -84), 0.28, Color("#f1d4a9"))
+	_industrial_details()
 
 func _streetlight(p: Vector3) -> void:
 	box(p + Vector3.UP * 4.9, Vector3(0.18, 9.8, 0.18), "painted_steel")
@@ -448,9 +373,14 @@ func _rack(p: Vector3) -> void:
 
 func _conveyor(p: Vector3, width: float) -> void:
 	box(p + Vector3(0, 0.57, 0), Vector3(width, 0.4, 3.0), "painted_steel")
-	for k in range(int(width / 2.0)):
-		var roller = box(p + Vector3(-width / 2.0 + 1.2 + k * 2.0, 0.89, 0), Vector3(0.22, 0.11, 2.6), "galvanized", false)
+	for k in range(int(width / 1.7)):
+		var roller = Visuals.cylinder(self, p + Vector3(-width / 2.0 + 1.0 + k * 1.7, .89, 0), .18, 2.7, _style_material("galvanized"), 12, Vector3(PI*.5, 0, 0))
+		roller.set_meta("roller", true)
 		machines.append(roller)
+	for xx in [-width*.47,0.0,width*.47]:
+		for zz in [-1.3,1.3]:
+			Visuals.pipe_between(self,p+Vector3(xx,.45,zz),p+Vector3(xx,-.2,zz),.09,_style_material("painted_steel"))
+	Visuals.cylinder(self,p+Vector3(-width*.49,0.65,-1.8),.39,1.05,_style_material("painted_steel"),16,Vector3(PI*.5,0,0))
 	for k in range(5):
 		var item = box(p + Vector3(-width / 2.0 + k * 8.0, 1.6, 0), Vector3(2.25, 1.1, 1.95), "cardboard", false)
 		item.set_meta("belt_min", p.x - width / 2.0)
@@ -475,6 +405,11 @@ func crate(p: Vector3, important = false) -> RigidBody3D:
 	mesh.mesh = bm
 	mesh.material_override = _style_material("cardboard")
 	b.add_child(mesh)
+	var pallet_mat = _style_material("wood")
+	for z in [-.38,0.0,.38]:
+		Visuals.cuboid(b,Vector3(0,-shape.size.y*.5+.12,z),Vector3(shape.size.x+.12,.12,.22),pallet_mat)
+	for x in [-.38,.38]:
+		Visuals.cuboid(b,Vector3(x,-shape.size.y*.5+.025,0),Vector3(.17,.11,shape.size.z+.12),pallet_mat)
 	var tape = MeshInstance3D.new()
 	var tape_mesh = BoxMesh.new()
 	tape_mesh.size = Vector3(shape.size.x * 0.22, shape.size.y + 0.02, shape.size.z + 0.04)
@@ -531,6 +466,8 @@ func _process(delta: float) -> void:
 				m.position.x += delta * 2.5
 				if m.position.x > float(m.get_meta("belt_max")):
 					m.position.x = float(m.get_meta("belt_min"))
+			elif m.has_meta("roller"):
+				m.rotation.x += delta * 2.1
 			else:
 				m.rotation.z += delta * 2.1
 	for i in range(flicker_lights.size()):
