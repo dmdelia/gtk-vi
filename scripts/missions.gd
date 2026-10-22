@@ -4,7 +4,7 @@ extends Node
 const TITLES = [
 	"DER ERSTE ARBEITSTAG", "STAPLERSCHEIN? WELCHER STAPLERSCHEIN?",
 	"DIE VERSCHWUNDENE PALETTE", "SCHICHTWECHSEL", "PRODUKTIONSCHAOS",
-	"DER GROSSE KARTON-COUP", "KARTON EU IV"
+	"DER GROSSE KARTON-COUP", "GTK: VI"
 ]
 const OBJECTIVES = [
 	["Erreiche die Anmeldung in der Verwaltung.", "Sprich mit Vorarbeiter Rüdiger in Halle A.", "Stemple dich am Terminal ein."],
@@ -161,7 +161,7 @@ func complete() -> void:
 		completed = true
 		active = false
 		game.wanted = 0
-		game.notify("KARTON EU IV ABGESCHLOSSEN\n"+ending+"\nFree Mode bleibt verfügbar!",17.0)
+		game.notify("GTK: VI ABGESCHLOSSEN\n"+ending+"\nFree Mode bleibt verfügbar!",17.0)
 		game.save_game()
 		return
 	index += 1

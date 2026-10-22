@@ -1,4 +1,4 @@
-# KARTON EU IV: Push full project to the existing repository, then release.
+# GTK: VI: Push full project to the existing repository, then release.
 # Prerequisites: Git + GitHub CLI, authenticated using gh auth login.
 $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
@@ -10,10 +10,10 @@ if ($LASTEXITCODE -ne 0) { throw 'gh auth login ausfuehren.' }
 gh repo view $repo
 if ($LASTEXITCODE -ne 0) { throw "Repository $repo nicht gefunden." }
 if (-not (Test-Path '.git')) { git init }
-git config user.name 'KARTON EU IV'
+git config user.name 'GTK: VI'
 git config user.email 'kartoneu-iv@users.noreply.github.com'
 git add .
-git -c user.name='KARTON EU IV' -c user.email='kartoneu-iv@users.noreply.github.com' commit -m 'Add complete KARTON EU IV v0.1.1-prealpha Godot source'
+git -c user.name='GTK: VI' -c user.email='kartoneu-iv@users.noreply.github.com' commit -m 'Add complete GTK: VI v0.1.1-prealpha Godot source'
 if ($LASTEXITCODE -ne 0) { throw 'Commit fehlgeschlagen.' }
 git branch -M main
 $remote = git remote get-url origin 2>$null

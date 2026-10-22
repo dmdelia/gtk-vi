@@ -1,5 +1,5 @@
 extends Node3D
-## KARTON EU IV main coordinator. No external assets required.
+## GTK: VI - Grand Theft Karton main coordinator.
 const World = preload("res://scripts/world.gd")
 const Player = preload("res://scripts/player.gd")
 const Vehicle = preload("res://scripts/vehicle.gd")
@@ -44,6 +44,7 @@ var hit_delay = 0.0
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_random_seed()
+	_migrate_legacy_user_data()
 	load_options()
 	_build_environment()
 	camera = Camera3D.new()
@@ -66,6 +67,18 @@ func _ready() -> void:
 	# The updater is non-blocking; gameplay also works completely offline.
 	if updater.auto_update:
 		updater.check_now()
+
+func _migrate_legacy_user_data() -> void:
+	# Godot stores user:// under the project name. Preserve existing saves on rebrand.
+	var new_dir = ProjectSettings.globalize_path("user://")
+	var legacy_dir = new_dir.get_base_dir().path_join("KARTON EU IV")
+	if not DirAccess.dir_exists_absolute(legacy_dir):
+		return
+	for name in ["options.json", "savegame.json"]:
+		var old_path = legacy_dir.path_join(name)
+		var new_path = new_dir.path_join(name)
+		if FileAccess.file_exists(old_path) and not FileAccess.file_exists(new_path):
+			DirAccess.copy_absolute(old_path, new_path)
 
 func _random_seed() -> void:
 	seed(791753)

@@ -1,4 +1,4 @@
-name: Windows Build & Release
+name: GTK VI Windows Build & Release
 
 on:
   push:
@@ -19,47 +19,42 @@ jobs:
           version: 4.4.1
           use-dotnet: false
           include-templates: true
-      - name: Godot version
-        run: godot --version
       - name: Generate original bitmap PBR assets
         run: |
           python3 -m pip install --quiet pillow numpy
           python3 tools/generate_textures.py
           test -s assets/textures/asphalt_albedo.png
-          test -s assets/textures/sheetmetal_normal.png
-          test -s assets/textures/cardboard_roughness.png
       - name: Import and check scripts
         run: |
+          set -o pipefail
           godot --headless --editor --path . --import --quit 2>&1 | tee /tmp/godot-import.log
           ! grep -E "SCRIPT ERROR|Parse Error|ERROR: Failed to load script" /tmp/godot-import.log
+      - name: Test prerelease discovery and version comparison
+        run: |
+          set -o pipefail
+          timeout 90 godot --headless --path . --script res://tests/update_test.gd 2>&1 | tee /tmp/godot-updater.log
+          grep -q "UPDATER SMOKE TEST PASS" /tmp/godot-updater.log
+          ! grep -E "SCRIPT ERROR|Parse Error|Invalid call|Invalid access" /tmp/godot-updater.log
       - name: Exercise Story, Free Mode, cheats and saving
         run: |
+          set -o pipefail
           timeout 180 godot --headless --path . --script res://tests/smoke_test.gd 2>&1 | tee /tmp/godot-smoke.log
           grep -q "SMOKE TEST PASS" /tmp/godot-smoke.log
           ! grep -E "SCRIPT ERROR|Parse Error|Invalid call|Invalid access" /tmp/godot-smoke.log
       - name: Export Windows game
         run: |
           mkdir -p build/windows
-          godot --headless --path . --export-release "Windows Desktop" build/windows/KARTON-EU-IV.exe
-          test -s build/windows/KARTON-EU-IV.exe
-          test -s build/windows/KARTON-EU-IV.pck
-      - name: Save generated PBR textures to repository
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f assets/textures/*.png
-          if ! git diff --cached --quiet; then
-            git commit -m "assets: add 36 original game-ready PBR texture maps"
-            git push origin HEAD:main
-          fi
+          godot --headless --path . --export-release "Windows Desktop" build/windows/GTK-VI.exe
+          test -s build/windows/GTK-VI.exe
+          test -s build/windows/GTK-VI.pck
       - name: Package full standalone Windows build
         run: |
           cd build/windows
-          zip -9 -j ../../KARTON-EU-IV-windows.zip KARTON-EU-IV.exe KARTON-EU-IV.pck
+          zip -9 -j ../../GTK-VI-windows.zip GTK-VI.exe GTK-VI.pck
       - uses: actions/upload-artifact@v4
         with:
-          name: KARTON-EU-IV-windows
-          path: KARTON-EU-IV-windows.zip
+          name: GTK-VI-windows
+          path: GTK-VI-windows.zip
       - name: Publish tested build to GitHub Releases
         env:
           GH_TOKEN: ${{ github.token }}
@@ -68,11 +63,18 @@ jobs:
             VERSION="${GITHUB_REF_NAME}"
             EXTRA_FLAGS="--verify-tag"
           else
-            VERSION="v0.1.2-prealpha"
-            EXTRA_FLAGS="--prerelease --target $(git rev-parse HEAD)"
+            VERSION="v0.1.3-prealpha"
+            EXTRA_FLAGS="--prerelease --target ${GITHUB_SHA}"
           fi
           if gh release view "$VERSION" >/dev/null 2>&1; then
-            gh release upload "$VERSION" KARTON-EU-IV-windows.zip --clobber
+            gh release upload "$VERSION" GTK-VI-windows.zip --clobber
           else
-            gh release create "$VERSION" KARTON-EU-IV-windows.zip --title "KARTON EU IV $VERSION" --generate-notes $EXTRA_FLAGS
+            gh release create "$VERSION" GTK-VI-windows.zip --title "GTK: VI - Grand Theft Karton $VERSION" --generate-notes $EXTRA_FLAGS
           fi
+  windows-installer-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test real file replacement and legacy filename migration
+        shell: pwsh
+        run: ./tests/windows_installer_test.ps1

@@ -3,11 +3,11 @@ class_name VersionInfo
 
 const MAJOR := 0
 const MINOR := 1
-const PATCH := 2
+const PATCH := 3
 const PHASE_CODE := 1
 const PHASE_SUFFIX := "prealpha"
-const BUILD_NUMBER := 1102
-const UPDATE_NAME := "MODEL & PBR OVERHAUL"
+const BUILD_NUMBER := 1103
+const UPDATE_NAME := "UPDATER & REBRAND"
 
 static func semantic() -> String:
 	return "%d.%d.%d" % [MAJOR, MINOR, PATCH]

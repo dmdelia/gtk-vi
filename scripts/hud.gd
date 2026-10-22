@@ -83,8 +83,8 @@ func build_menu() -> void:
 	content.add_theme_constant_override("separation",13)
 	margin.add_child(content)
 	content.add_child(_label("K  /  E  /  U",22,Color("#f2ba59")))
-	content.add_child(_label("KARTON EU IV",62,Color("#f2efdf")))
-	content.add_child(_label("GROSSINDUSTRIE. KLEINE MORAL. EIN VIEL ZU GROSSER KARTON.",14,Color("#b1c6c9")))
+	content.add_child(_label("GTK: VI",62,Color("#f2efdf")))
+	content.add_child(_label("GRAND THEFT KARTON  |  INDUSTRIE. CHAOS. KARTON.",14,Color("#b1c6c9")))
 	content.add_child(HSeparator.new())
 	var buttons = VBoxContainer.new()
 	buttons.add_theme_constant_override("separation",6)
@@ -127,7 +127,7 @@ func show_submenu(section: String) -> void:
 		box.add_child(_label("WASD  Bewegen / Fahren\nMAUS  Kamera\nSHIFT  Sprinten\nSTRG  Schleichen\nLEERTASTE  Springen / Handbremse\nE  Interaktion / Fahrzeug betreten und verlassen\nR  Gabelstaplerpalette aufnehmen / absetzen\nF  Taschenlampe\nM  Karte\n~ oder F1  Cheat-Konsole\nESC  Pausemenü",22))
 	else:
 		box.add_child(_label("CREDITS",37,Color("#e3bf74")))
-		box.add_child(_label("KARTON EU IV\nEin eigenständiges 3D-Fabrik-Sandbox-Spiel.\nGodot 4.4 • GDScript • prozedurale 3D-Assets\nMusik und Industrieklänge synthetisch erzeugt.\nKeine fremden GTA-Assets.",21))
+		box.add_child(_label("GTK: VI\nGRAND THEFT KARTON\nEin eigenständiges 3D-Fabrik-Sandbox-Spiel.\nGodot 4.4 • GDScript • prozedurale 3D-Assets\nMusik und Industrieklänge synthetisch erzeugt.\nKeine fremden GTA-Assets.",21))
 	_button("< ZURÜCK",back,box)
 
 func build_hud() -> void:

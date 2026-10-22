@@ -346,7 +346,7 @@ func _build() -> void:
 	interactive("vending", "GETRÄNKEAUTOMAT", Vector3(24, 0, -8), "#e7a0af")
 	interactive("repair", "FAHRZEUGWERKSTATT", Vector3(3, 0, 22), "#85d8ce")
 	# Signage.
-	sign_text("KARTON EU IV", Vector3(0, 14, 117), 1.9, Color("#efd598"))
+	sign_text("GTK: VI", Vector3(0, 14, 117), 1.9, Color("#efd598"))
 	sign_text("TUCHMACHERALLEE \u2502 WERKSZUFAHRT \u2502 20 km/h", Vector3(-2, 4, 112), 0.6)
 	sign_text("TEXTURE OVERHAUL \u2502 LAYOUT NACH LOGISTIK-FOOTPRINT", Vector3(-77, 4, -84), 0.28, Color("#f1d4a9"))
 	_industrial_details()

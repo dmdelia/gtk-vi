@@ -1,8 +1,8 @@
-; KARTON EU IV - original industrial sandbox
+; GTK: VI - Grand Theft Karton industrial sandbox
 config_version=5
 
 [application]
-config/name="KARTON EU IV"
+config/name="GTK VI - Grand Theft Karton"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 
