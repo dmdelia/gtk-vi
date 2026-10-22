@@ -136,31 +136,31 @@ func begin(which: String) -> void:
 	player = Player.new()
 	player.game = self
 	add_child(player)
-	player.global_position = Vector3(-93,1,95) if which == "story" else Vector3(-16,1,83)
+	player.global_position = Vector3(106,1,92) if which == "story" else Vector3(84,1,88)
 	for data in [
-		["fork1","forklift",Vector3(-70,1,12),"#ecae35"],
-		["fork2","forklift",Vector3(65,1,-12),"#edb94d"],
-		["truck1","truck",Vector3(107,1,99),"#ae4851"],
-		["truck2","truck",Vector3(116,1,15),"#4c7c92"],
-		["car1","car",Vector3(-116,1,90),"#c45d65"],
-		["car2","car",Vector3(-102,1,90),"#557c9a"],
-		["car3","car",Vector3(-86,1,90),"#d3bb61"],
-		["secret_car","car",Vector3(125,1,-95),"#d18ad9"],
-		["car4","car",Vector3(7,1,15),"#7b858c"]]:
+		["fork1","forklift",Vector3(-22,1,30),"#ecae35"],
+		["fork2","forklift",Vector3(8,1,31),"#edb94d"],
+		["truck1","truck",Vector3(109,1,89),"#ae4851"],
+		["truck2","truck",Vector3(93,1,87),"#4c7c92"],
+		["car1","car",Vector3(120,1,95),"#c45d65"],
+		["car2","car",Vector3(111,1,95),"#557c9a"],
+		["car3","car",Vector3(102,1,95),"#d3bb61"],
+		["secret_car","car",Vector3(132,1,-95),"#d18ad9"],
+		["car4","car",Vector3(82,1,88),"#7b858c"]]:
 		spawn_vehicle(str(data[0]),str(data[1]),data[2],Color(str(data[3])))
 	for data in [
-		["boss","worker",Vector3(-85,1,-29)],
-		["dispatcher","office",Vector3(81,1,22)],
-		["mechanic","worker",Vector3(12,1,46)],
-		["guard1","guard",Vector3(-30,1,-12)],
-		["guard2","guard",Vector3(13,1,-14)],
-		["guard3","guard",Vector3(124,1,20)],
-		["guard4","guard",Vector3(-97,1,74)]]:
+		["boss","worker",Vector3(-109,1,-54)],
+		["dispatcher","office",Vector3(82,1,18)],
+		["mechanic","worker",Vector3(3,1,22)],
+		["guard1","guard",Vector3(-44,1,-40)],
+		["guard2","guard",Vector3(22,1,-44)],
+		["guard3","guard",Vector3(96,1,15)],
+		["guard4","guard",Vector3(102,1,82)]]:
 		_spawn_npc(str(data[0]),str(data[1]),data[2])
 	var rng = RandomNumberGenerator.new()
 	rng.seed = 82361
 	for i in 27:
-		var site = [Vector3(-86,1,-47),Vector3(-15,1,-46),Vector3(63,1,-45),Vector3(-92,1,43),Vector3(-38,1,47),Vector3(12,1,47),Vector3(76,1,49)][i%7]
+		var site = [Vector3(-109,1,-54),Vector3(-44,1,-54),Vector3(28,1,-54),Vector3(-43,1,18),Vector3(34,1,25),Vector3(3,1,22),Vector3(82,1,18)][i%7]
 		_spawn_npc("angestellter_%02d"%i,"office" if i%6==0 else "worker",site+Vector3(rng.randf_range(-12,12),0,rng.randf_range(-12,12)))
 	missions = Missions.new()
 	missions.game = self
@@ -425,7 +425,7 @@ func respawn() -> void:
 	if current_vehicle != null:
 		exit_vehicle()
 	player.health = 100
-	player.global_position = Vector3(-88,2,94)
+	player.global_position = Vector3(106,2,92)
 	player.money = maxi(0,player.money-75)
 	wanted = 0
 	notify("WIEDERBELEBT: 75 € Werksarztgebühr. Schnäppchen.",5)
@@ -440,7 +440,7 @@ func _sidequest_tick(delta: float) -> void:
 		return
 	if current_vehicle == null or current_vehicle.kind != "forklift":
 		return
-	var gates = [Vector3(-75,0,7),Vector3(10,0,10),Vector3(79,0,8)]
+	var gates = [Vector3(86,0,86),Vector3(106,0,88),Vector3(126,0,90)]
 	if current_vehicle.global_position.distance_to(gates[sidequest_stage]) < 12:
 		sidequest_stage += 1
 		if sidequest_stage >= gates.size():

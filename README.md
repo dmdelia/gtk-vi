@@ -2,7 +2,7 @@
 
 **3D-Industriesandbox für Windows, mit sieben Story-Missionen und Free Mode.** Eigenständiges Godot-4.4.1-Projekt aus GDScript und prozeduralen 3D-Objekten, ohne fremde GTA-Inhalte oder kostenpflichtige Assets.
 
-> **Entwicklungsstand: 0.1.0 / Open-World-Spielprototyp mit zusammenhängenden Spielsystemen.** Der Quellcode liegt bei. Ein vollständiges kommerzielles GTA-Großspiel ist das nicht. Die Scripts konnten in der Erstellungsumgebung mangels Godot-Engine und Exportvorlagen nicht ausgeführt oder end-to-end geprüft werden. Eine Release-EXE entsteht erst nach einem erfolgreichen CI-Export.
+> **Entwicklungsstand: 0.1.1 / Open-World-Spielprototyp mit zusammenhängenden Spielsystemen.** Der Quellcode liegt bei. Ein vollständiges kommerzielles GTA-Großspiel ist das nicht. Die Scripts konnten in der Erstellungsumgebung mangels Godot-Engine und Exportvorlagen nicht ausgeführt oder end-to-end geprüft werden. Eine Release-EXE entsteht erst nach einem erfolgreichen CI-Export.
 
 ## Spielen
 
@@ -39,9 +39,9 @@
 
 ## Releases / Windows-EXE
 
-Die Workflow-Datei `.github/workflows/windows-release.yml` baut nach Push auf `main` ein ZIP unter GitHub Actions. Bei einem Tag `v0.1.0` erzeugt sie zusätzlich ein GitHub-Release mit dem ZIP, einschließlich `.exe` und `.pck`.
+Die Workflow-Datei `.github/workflows/windows-release.yml` baut nach Push auf `main` ein ZIP unter GitHub Actions. Bei einem Tag `v0.1.1-prealpha` erzeugt sie zusätzlich ein GitHub-Release mit dem ZIP, einschließlich `.exe` und `.pck`.
 
-**Repository:** https://github.com/dmdelia/gtk-vi (main). Ein initialer Workflow liegt dort bereits. Das vollstaendige Spielprojekt kann mit `publish.ps1` (PowerShell, Git und angemeldete GitHub CLI erforderlich) gepusht werden. Das Skript erstellt danach `v0.1.0` und loest dadurch den Windows-Release-Build aus. Erst wenn der Workflow erfolgreich durchlaeuft, steht die EXE unter https://github.com/dmdelia/gtk-vi/releases bereit.
+**Repository:** https://github.com/dmdelia/gtk-vi (main). Ein initialer Workflow liegt dort bereits. Das vollstaendige Spielprojekt kann mit `publish.ps1` (PowerShell, Git und angemeldete GitHub CLI erforderlich) gepusht werden. Das Skript erstellt danach `v0.1.1-prealpha` und loest dadurch den Windows-Release-Build aus. Erst wenn der Workflow erfolgreich durchlaeuft, steht die EXE unter https://github.com/dmdelia/gtk-vi/releases bereit.
 
 ## Integrierter Updater
 

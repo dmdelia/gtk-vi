@@ -16,13 +16,13 @@ const OBJECTIVES = [
 	["Aktiviere den Zentralrechner der Verwaltung.", "Entkomme dem Werkschutz. Wähle deinen Ausgang!", "Entscheide dich für einen der beiden Ausgänge."]
 ]
 const TARGETS = [
-	[Vector3(-92,0,45),Vector3(-85,0,-29),Vector3(-110,0,55)],
-	[Vector3(-70,0,12),Vector3(62,0,-10),Vector3(77,0,-47),Vector3(93,0,78),Vector3(93,0,78)],
-	[Vector3(82,0,-63),Vector3(-83,0,39),Vector3(81,0,22)],
-	[Vector3(-12,0,-51),Vector3(1,0,-42),Vector3(-15,0,12)],
-	[Vector3(-66,0,-55),Vector3(-13,0,-53),Vector3(16,0,-37)],
-	[Vector3(12,0,46),Vector3(50,0,-39),Vector3(90,0,98),Vector3(137,0,100)],
-	[Vector3(-97,0,54),Vector3(-137,0,27),Vector3(10,0,106)]
+	[Vector3(82,0,18),Vector3(-109,0,-54),Vector3(82,0,18)],
+	[Vector3(-22,0,30),Vector3(-43,0,18),Vector3(-43,0,18),Vector3(34,0,55),Vector3(34,0,55)],
+	[Vector3(-43,0,18),Vector3(79,0,18),Vector3(82,0,18)],
+	[Vector3(-44,0,-54),Vector3(-44,0,-54),Vector3(0,0,6)],
+	[Vector3(-109,0,-54),Vector3(-44,0,-54),Vector3(28,0,-54)],
+	[Vector3(3,0,22),Vector3(-34,0,7),Vector3(109,0,89),Vector3(137,0,100)],
+	[Vector3(82,0,20),Vector3(-137,0,27),Vector3(10,0,106)]
 ]
 var game
 var index = 0

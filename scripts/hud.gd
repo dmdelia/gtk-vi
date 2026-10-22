@@ -1,6 +1,7 @@
 extends CanvasLayer
 ## All menu and HUD screens built with native Godot controls.
 const MAP_SCRIPT = preload("res://scripts/minimap.gd")
+const VERSION_INFO = preload("res://scripts/version_info.gd")
 var game
 var outer: Control
 var menu_panel: PanelContainer
@@ -96,7 +97,7 @@ func build_menu() -> void:
 	_button("CREDITS",func(): show_submenu("credits"),buttons)
 	_button("UPDATES PRÜFEN",func(): game.updater.check_now(),buttons)
 	_button("SPIEL BEENDEN",func(): game.quit_game(),buttons)
-	update_label = _label("VERSION 0.1.0  |  GESCHMIEDET AUS 100% KARTON",13,Color("#86a9ae"))
+	update_label = _label("VERSION %s" % VERSION_INFO.display_with_name(),13,Color("#86a9ae"))
 	content.add_child(update_label)
 
 func show_submenu(section: String) -> void:
@@ -235,7 +236,8 @@ func _process(delta: float) -> void:
 		return
 	mission_label.text = game.missions.objective()
 	if game.missions.timer > 0:
-		mission_label.text += "\nZEIT: %ds" % ceili(game.missions.timer)
+		mission_label.text += "
+ZEIT: %ds" % ceili(game.missions.timer)
 	var v = ""
 	if game.current_vehicle != null:
 		v = "\n%d km/h  |  SCHADEN %d%%" % [absf(game.current_vehicle.speed)*3.6,game.current_vehicle.damage]

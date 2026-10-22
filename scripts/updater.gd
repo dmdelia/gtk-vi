@@ -1,9 +1,11 @@
 extends Node
 ## GitHub Releases updater: validates digest, stages a ZIP and swaps files on quit.
 ## The remote repository and a published release are prerequisites.
-const CURRENT_VERSION = "0.1.0"
+const VersionInfo = preload("res://scripts/version_info.gd")
+const CURRENT_VERSION = "0.1.1"
+const CURRENT_VERSION_DISPLAY = "0.1.1-prealpha @ 1.101"
 const REPO = "dmdelia/gtk-vi"
-const API = "https://api.github.com/repos/%s/releases/latest" % REPO
+const API = "https://api.github.com/repos/%s/releases?per_page=20" % REPO
 var game
 var auto_update = true
 var request: HTTPRequest
@@ -34,34 +36,34 @@ func check_now() -> void:
 		_status("GitHub-Releases werden geprüft ...")
 
 func _newer(version: String) -> bool:
-	var new_bits = version.trim_prefix("v").split(".")
-	var old_bits = CURRENT_VERSION.split(".")
-	for i in range(3):
-		var x = int(new_bits[i]) if i < new_bits.size() else 0
-		var y = int(old_bits[i]) if i < old_bits.size() else 0
-		if x > y:
-			return true
-		if x < y:
-			return false
-	return false
+	return VersionInfo.is_newer(version, CURRENT_VERSION)
 
 func _handle_response(result: int, code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	if result != HTTPRequest.RESULT_SUCCESS or code != 200:
 		phase = "idle"
-		_status("Keine Release-Verbindung (%d). Weiterhin Version %s." % [code,CURRENT_VERSION])
+		_status("Keine Release-Verbindung (%d). Weiterhin Version %s." % [code,CURRENT_VERSION_DISPLAY])
 		return
 	if phase == "checking":
 		var parsed = JSON.parse_string(body.get_string_from_utf8())
-		if not parsed is Dictionary:
+		var release: Dictionary = {}
+		if parsed is Array:
+			for entry in parsed:
+				if not entry is Dictionary:
+					continue
+				var tag = str(entry.get("tag_name", ""))
+				if not _newer(tag):
+					continue
+				if release.is_empty() or VersionInfo.is_newer(tag, str(release.get("tag_name", ""))):
+					release = entry
+		elif parsed is Dictionary:
+			release = parsed
+		new_version = str(release.get("tag_name", ""))
+		if release.is_empty() or not _newer(new_version):
 			phase = "idle"
-			return
-		new_version = str(parsed.get("tag_name",""))
-		if not _newer(new_version):
-			phase = "idle"
-			_status("KARTON EU IV ist aktuell (%s)." % CURRENT_VERSION)
+			_status("KARTON EU IV ist aktuell (%s)." % CURRENT_VERSION_DISPLAY)
 			return
 		api_asset = {}
-		for asset in parsed.get("assets",[]):
+		for asset in release.get("assets",[]):
 			if str(asset.get("name","")).ends_with("windows.zip"):
 				api_asset = asset
 				break

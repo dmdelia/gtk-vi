@@ -14,7 +14,7 @@ Der folgenden Tests sollten auf einem Rechner mit Godot 4.4.1 durchlaufen werden
 10. Free Mode: Fahrzeuge, Werkstattautomat, Slalom, Easter Egg, Fahndung.
 11. F1: alle Cheats einzeln testen, Toggle-Cheats durch zweite Eingabe ausschalten.
 12. Optionen ändern, speichern, neu starten, laden, Zustand vergleichen.
-13. Release `v0.1.0` taggen, GitHub-Action auf erfolgreichen Windows-Export prüfen, ZIP entpacken, .exe + .pck aus gleichem Ordner starten.
-14. Nach `v0.1.1` mit angepasster CURRENT_VERSION einen Release mit ZIP + SHA256-Digest veröffentlichen; beim Start Update prüfen, heruntergeladenes Paket verifizieren und beim Beenden austauschen.
+13. Release `v0.1.1-prealpha` taggen, GitHub-Action auf erfolgreichen Windows-Export prüfen, ZIP entpacken, .exe + .pck aus gleichem Ordner starten.
+14. Nach `v0.1.1-prealpha` mit angepasster CURRENT_VERSION einen Release mit ZIP + SHA256-Digest veröffentlichen; beim Start Update prüfen, heruntergeladenes Paket verifizieren und beim Beenden austauschen.
 
 > Die Software muss vor Verteilung an Dritte real ausgeführt und getestet werden. Quellcode-Bereitstellung allein weist keine Laufzeitfunktion nach.

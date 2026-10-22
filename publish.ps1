@@ -13,7 +13,7 @@ if (-not (Test-Path '.git')) { git init }
 git config user.name 'KARTON EU IV'
 git config user.email 'kartoneu-iv@users.noreply.github.com'
 git add .
-git -c user.name='KARTON EU IV' -c user.email='kartoneu-iv@users.noreply.github.com' commit -m 'Add complete KARTON EU IV v0.1.0 Godot source'
+git -c user.name='KARTON EU IV' -c user.email='kartoneu-iv@users.noreply.github.com' commit -m 'Add complete KARTON EU IV v0.1.1-prealpha Godot source'
 if ($LASTEXITCODE -ne 0) { throw 'Commit fehlgeschlagen.' }
 git branch -M main
 $remote = git remote get-url origin 2>$null
@@ -26,9 +26,9 @@ git merge --allow-unrelated-histories -X ours --no-edit origin/main
 if ($LASTEXITCODE -ne 0) { throw 'Merge-Konflikt. Nicht automatisch ueberschreiben.' }
 git push -u origin main
 if ($LASTEXITCODE -ne 0) { throw 'Push fehlgeschlagen.' }
-git tag v0.1.0
+git tag v0.1.1-prealpha
 if ($LASTEXITCODE -ne 0) { throw 'Tagging fehlgeschlagen.' }
-git push origin v0.1.0
+git push origin v0.1.1-prealpha
 if ($LASTEXITCODE -ne 0) { throw 'Tag-Push fehlgeschlagen.' }
 Write-Host 'Code gepusht. Release-Workflow unter https://github.com/dmdelia/gtk-vi/actions pruefen.' -ForegroundColor Green
 Start-Process 'https://github.com/dmdelia/gtk-vi/actions'

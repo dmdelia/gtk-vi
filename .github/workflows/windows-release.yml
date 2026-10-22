@@ -48,13 +48,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if [ "${GITHUB_REF_NAME}" = "main" ]; then
-            VERSION="v0.1.0"
-          else
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
             VERSION="${GITHUB_REF_NAME}"
+            EXTRA_FLAGS="--verify-tag"
+          else
+            VERSION="v0.1.1-prealpha"
+            EXTRA_FLAGS="--prerelease --target ${GITHUB_SHA}"
           fi
           if gh release view "$VERSION" >/dev/null 2>&1; then
             gh release upload "$VERSION" KARTON-EU-IV-windows.zip --clobber
           else
-            gh release create "$VERSION" KARTON-EU-IV-windows.zip --target "$GITHUB_SHA" --title "KARTON EU IV $VERSION" --generate-notes
+            gh release create "$VERSION" KARTON-EU-IV-windows.zip --title "KARTON EU IV $VERSION" --generate-notes $EXTRA_FLAGS
           fi
