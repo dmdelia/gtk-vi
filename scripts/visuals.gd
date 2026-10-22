@@ -15,7 +15,6 @@ static func material(kind: String, tint: Color = Color.WHITE, metal = -1.0) -> S
 	m.roughness = 0.74
 	m.metallic = 0.0
 	m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
-	m.texture_repeat = BaseMaterial3D.TEXTURE_REPEAT_ENABLED
 	var albedo_path = "res://assets/textures/%s_albedo.png" % kind
 	var normal_path = "res://assets/textures/%s_normal.png" % kind
 	var rough_path = "res://assets/textures/%s_roughness.png" % kind
