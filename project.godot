@@ -20,6 +20,7 @@ textures/default_filters/use_nearest_mipmap_filter=false
 anti_aliasing/quality/msaa_3d=2
 
 [physics]
+common/physics_interpolation=true
 3d/default_gravity=20.0
 
 [input]

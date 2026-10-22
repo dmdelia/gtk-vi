@@ -120,3 +120,21 @@ p=blend((112,118,134),(49,58,72),n*.26+weave*.43)
 save('fabric',p,h,.96)
 
 print(f"Generated {len(list(OUT.glob('*.png')))} original PBR maps in {OUT}")
+
+# Organic materials are deliberately different from the industrial surface families.
+# Skin has micro-pore noise and low-contrast blotches; hair follows directional strands.
+n = multi()
+pores = rng.random((S,S))
+soft = tile_noise(47)
+freckles = (rng.random((S,S)) > .9985).astype(float)
+skin_h = n * .11 + pores * .045 + freckles * .06
+skin_rgb = blend((225,185,154),(168,123,96),soft * .12 + n * .11 + freckles * .18)
+skin_rgb += (pores[...,None] - .5) * 5.0
+save('skin',skin_rgb,skin_h,.67)
+
+n = multi()
+strand = .5 + .5*np.sin(X*.48 + np.sin(Y*.016)*.95 + np.sin(Y*.008)*.55)
+secondary = .5 + .5*np.cos(X*.11 + Y*.007)
+hair_h = strand*.19 + n*.09
+hair_rgb = blend((91,78,65),(31,29,30),strand*.36 + secondary*.21 + n*.12)
+save('hair',hair_rgb,hair_h,.78)

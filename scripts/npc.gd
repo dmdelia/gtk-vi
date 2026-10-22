@@ -1,5 +1,5 @@
 extends CharacterBody3D
-const V = preload("res://scripts/visuals.gd")
+const Humanoid = preload("res://scripts/humanoid.gd")
 ## Local workers, receptionists and security patrol using the shared AStar graph.
 
 var game
@@ -13,8 +13,7 @@ var goal_timer = 0.0
 var panic_timer = 0.0
 var leg_clock = 0.0
 var conversation = 0.0
-var left_leg: MeshInstance3D
-var right_leg: MeshInstance3D
+var human: Node3D
 var service_badge = false
 
 func setup(id: String, job: String, p: Vector3) -> void:
@@ -34,47 +33,14 @@ func _ready() -> void:
 	shape.position.y = 1.05
 	shape.shape = cap
 	add_child(shape)
-	var shirt = Color("#e8a947") if role == "worker" else (Color("#718eac") if role == "office" else Color("#293d50"))
-	var cloth = V.material("fabric", shirt)
-	var denim = V.material("fabric", Color("#39434b"))
-	var skin = V.plain(Color("#c9a18a"),0,.87)
-	var steel = V.material("steel",Color("#98a7ac"))
-	V.capsule(self,Vector3(0,1.36,0),.39,.84,cloth)
-	V.sphere(self,Vector3(0,1.96,0),Vector3(.43,.48,.42),skin,18)
-	V.sphere(self,Vector3(0,2.21,.05),Vector3(.44,.2,.43),V.material("fabric",Color("#4c3734")),18)
-	left_leg=V.capsule(self,Vector3(-.2,.52,0),.15,.87,denim)
-	right_leg=V.capsule(self,Vector3(.2,.52,0),.15,.87,denim)
-	for side in [-1,1]:
-		var sx=float(side)
-		V.capsule(self,Vector3(sx*.53,1.27,0),.145,.76,cloth)
-		V.sphere(self,Vector3(sx*.54,.91,-.03),Vector3(.23,.24,.22),skin)
-		V.sphere(self,Vector3(sx*.2,.12,-.13),Vector3(.36,.21,.5),V.material("rubber",Color("#292d30")))
-		V.sphere(self,Vector3(sx*.13,2.02,-.22),Vector3(.065,.055,.03),V.plain(Color("#242627")))
-	V.sphere(self,Vector3(0,1.9,-.23),Vector3(.075,.095,.1),skin)
-	if role == "worker":
-		# Hi-vis chest retroreflective tape and industrial helmet.
-		V.cuboid(self,Vector3(0,1.53,-.34),Vector3(.62,.09,.045),V.plain(Color("#e0ead7"),0,.28))
-		V.cuboid(self,Vector3(0,1.12,-.34),Vector3(.62,.09,.045),V.plain(Color("#e0ead7"),0,.28))
-		V.sphere(self,Vector3(0,2.31,.02),Vector3(.51,.28,.47),V.plain(Color("#e6bd4d"),0,.48))
-		V.cylinder(self,Vector3(0,2.21,-.2),.38,.06,V.plain(Color("#f7d980")),20)
-	elif role == "guard":
-		V.cuboid(self,Vector3(0,1.42,-.4),Vector3(.3,.17,.055),steel)
-		V.cuboid(self,Vector3(0,1.14,-.38),Vector3(.73,.11,.06),V.plain(Color("#262830")))
-	else:
-		V.cuboid(self,Vector3(.17,1.35,-.39),Vector3(.16,.2,.045),V.plain(Color("#e8edf1")))
+	human = Humanoid.new()
+	human.name = "AnatomicalHuman"
+	var avatar_seed = 0
+	for i in npc_id.length():
+		avatar_seed += npc_id.unicode_at(i) * (i + 1)
+	human.configure(role, avatar_seed)
+	add_child(human)
 	goal_timer = randf_range(1,4)
-
-func _part(p: Vector3,s: Vector3, c: Color) -> MeshInstance3D:
-	var node = MeshInstance3D.new()
-	var m = BoxMesh.new()
-	m.size = s
-	node.mesh = m
-	var material = StandardMaterial3D.new()
-	material.albedo_color = c
-	node.material_override = material
-	node.position = p
-	add_child(node)
-	return node
 
 func talk() -> String:
 	conversation = 7.0
@@ -150,6 +116,5 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.y = -0.05
 	move_and_slide()
-	leg_clock += delta*motion*direction.length()
-	left_leg.rotation.x = sin(leg_clock*2.4)*0.33 if direction.length() > 0 else 0
-	right_leg.rotation.x = -left_leg.rotation.x
+	if human != null:
+		human.set_pose(Vector2(velocity.x,velocity.z).length(),direction.length()>0.05,panic_timer>0,false,false,delta)

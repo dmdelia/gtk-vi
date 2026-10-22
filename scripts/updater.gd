@@ -2,8 +2,8 @@ extends Node
 ## GTK: VI automatic Windows updater.
 ## Discover all releases (including pre-alphas), download, verify SHA-256, stage, exit and restart.
 const VersionInfo = preload("res://scripts/version_info.gd")
-const CURRENT_VERSION = "0.1.3"
-const CURRENT_VERSION_DISPLAY = "0.1.3-prealpha @ 1.103"
+const CURRENT_VERSION = "0.1.4"
+const CURRENT_VERSION_DISPLAY = "0.1.4-prealpha @ 1.104"
 const REPO = "dmdelia/gtk-vi"
 const API = "https://api.github.com/repos/%s/releases?per_page=30" % REPO
 const EXE_NAME = "GTK-VI.exe"

@@ -21,6 +21,9 @@ var current_vehicle
 var camera: Camera3D
 var camera_yaw = 0.0
 var camera_pitch = -0.24
+var camera_smoothed_target = Vector3.ZERO
+var camera_obstruction_distance = 6.6
+var camera_snap_next_frame = true
 var mouse_sensitivity = 0.0025
 var wanted = 0
 var wanted_decay = 0.0
@@ -49,6 +52,8 @@ func _ready() -> void:
 	_build_environment()
 	camera = Camera3D.new()
 	camera.current = true
+	# Camera moves each rendered frame; avoid applying a second physics interpolation.
+	camera.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	camera.fov = 75.0
 	camera.position = Vector3(5,16,36)
 	add_child(camera)
@@ -150,6 +155,8 @@ func begin(which: String) -> void:
 	player.game = self
 	add_child(player)
 	player.global_position = Vector3(106,1,92) if which == "story" else Vector3(84,1,88)
+	player.reset_physics_interpolation()
+	camera_snap_next_frame = true
 	for data in [
 		["fork1","forklift",Vector3(-22,1,30),"#ecae35"],
 		["fork2","forklift",Vector3(8,1,31),"#edb94d"],
@@ -232,18 +239,37 @@ func _process(delta: float) -> void:
 	_sidequest_tick(delta)
 
 func _camera_follow(delta: float) -> void:
+	# Physics bodies move at 60 Hz, the camera at the monitor refresh rate.
+	# Following global_position in _process caused a one-tick staircase.
 	var following: Node3D = current_vehicle if current_vehicle != null else player
-	var target: Vector3 = following.global_position + Vector3.UP * (2.7 if current_vehicle != null else 1.65)
-	var dist = 10.0 if current_vehicle != null else 6.6
-	var offset = Vector3(sin(camera_yaw)*cos(camera_pitch),-sin(camera_pitch),cos(camera_yaw)*cos(camera_pitch))*dist
-	var desired = target + offset
-	var space = get_world_3d().direct_space_state
-	var q = PhysicsRayQueryParameters3D.create(target,desired,1)
-	var hit = space.intersect_ray(q)
+	var rendered_transform: Transform3D = following.get_global_transform_interpolated()
+	var rendered_position: Vector3 = rendered_transform.origin
+	var target_height = 2.7 if current_vehicle != null else 1.65
+	var raw_target = rendered_position + Vector3.UP * target_height
+	var expected_distance = 10.0 if current_vehicle != null else 6.6
+	var camera_dir = Vector3(sin(camera_yaw) * cos(camera_pitch), -sin(camera_pitch), cos(camera_yaw) * cos(camera_pitch))
+	var obstruction_distance = expected_distance
+	var eye_target = raw_target + camera_dir * expected_distance
+	# Keep camera outside walls; smooth the retract/extend distance separately.
+	var query = PhysicsRayQueryParameters3D.create(raw_target,eye_target,1)
+	var hit = get_world_3d().direct_space_state.intersect_ray(query)
 	if not hit.is_empty():
-		desired = hit.position + (target-desired).normalized()*0.55
-	camera.global_position = camera.global_position.lerp(desired,minf(1,delta*12))
-	camera.look_at(target,Vector3.UP)
+		obstruction_distance = clampf(raw_target.distance_to(hit.position)-0.5,1.2,expected_distance)
+	if camera_snap_next_frame:
+		camera_snap_next_frame = false
+		camera_smoothed_target = raw_target
+		camera_obstruction_distance = obstruction_distance
+		camera.global_position = raw_target + camera_dir * camera_obstruction_distance
+	else:
+		# Exponential smoothing is framerate-independent at 60, 120 or 144 FPS.
+		var focus_blend = 1.0 - exp(-26.0 * delta)
+		var position_blend = 1.0 - exp(-17.0 * delta)
+		var wall_blend = 1.0 - exp(-(34.0 if obstruction_distance < camera_obstruction_distance else 10.0) * delta)
+		camera_smoothed_target = camera_smoothed_target.lerp(raw_target,focus_blend)
+		camera_obstruction_distance = lerpf(camera_obstruction_distance,obstruction_distance,wall_blend)
+		var desired = camera_smoothed_target + camera_dir * camera_obstruction_distance
+		camera.global_position = camera.global_position.lerp(desired,position_blend)
+	camera.look_at(camera_smoothed_target,Vector3.UP)
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and not paused:
@@ -368,6 +394,7 @@ func enter_vehicle(v) -> void:
 	player.collision_layer = 0
 	player.collision_mask = 0
 	camera_yaw = v.rotation.y
+	camera_snap_next_frame = true
 	notify("%s gestartet. WASD fahren, LEERTASTE bremsen, E aussteigen%s" % [v.kind.to_upper(),", R Gabel benutzen" if v.kind == "forklift" else ""],5)
 
 func exit_vehicle() -> void:
@@ -381,6 +408,8 @@ func exit_vehicle() -> void:
 	if not get_world_3d().direct_space_state.intersect_point(q).is_empty():
 		emerge = v.global_position-v.global_transform.basis.x*3.0+Vector3.UP
 	player.global_position = emerge
+	player.reset_physics_interpolation()
+	camera_snap_next_frame = true
 	player.in_car = false
 	player.visible = true
 	player.collision_layer = 2
@@ -439,6 +468,8 @@ func respawn() -> void:
 		exit_vehicle()
 	player.health = 100
 	player.global_position = Vector3(106,2,92)
+	player.reset_physics_interpolation()
+	camera_snap_next_frame = true
 	player.money = maxi(0,player.money-75)
 	wanted = 0
 	notify("WIEDERBELEBT: 75 € Werksarztgebühr. Schnäppchen.",5)

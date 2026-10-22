@@ -2,7 +2,7 @@
 
 **3D-Industriesandbox für Windows, mit sieben Story-Missionen und Free Mode.** Eigenständiges Godot-4.4.1-Projekt aus GDScript und prozeduralen 3D-Objekten, ohne fremde GTA-Inhalte oder kostenpflichtige Assets.
 
-> **Entwicklungsstand: 0.1.3-prealpha @ 1.103.** Gameplay-Prototyp mit erneuerten 3D-Modellen und bitmap-basierten PBR-Materialien. Windows-Build wird durch GitHub Actions importiert, getestet und exportiert; manuelle Spieltests sind trotzdem notwendig.
+> **Entwicklungsstand: 0.1.4-prealpha @ 1.104.** Gameplay-Prototyp mit erneuerten 3D-Modellen und bitmap-basierten PBR-Materialien. Windows-Build wird durch GitHub Actions importiert, getestet und exportiert; manuelle Spieltests sind trotzdem notwendig.
 
 ## Spielen
 
@@ -40,9 +40,9 @@
 
 ## Releases / Windows-EXE
 
-Die Workflow-Datei `.github/workflows/windows-release.yml` baut nach Push auf `main` ein ZIP unter GitHub Actions. Bei einem Tag `v0.1.3-prealpha` erzeugt sie zusätzlich ein GitHub-Release mit dem ZIP, einschließlich `.exe` und `.pck`.
+Die Workflow-Datei `.github/workflows/windows-release.yml` baut nach Push auf `main` ein ZIP unter GitHub Actions. Bei einem Tag `v0.1.4-prealpha` erzeugt sie zusätzlich ein GitHub-Release mit dem ZIP, einschließlich `.exe` und `.pck`.
 
-**Repository:** https://github.com/dmdelia/gtk-vi (main). Ein initialer Workflow liegt dort bereits. Das vollstaendige Spielprojekt kann mit `publish.ps1` (PowerShell, Git und angemeldete GitHub CLI erforderlich) gepusht werden. Das Skript erstellt danach `v0.1.3-prealpha` und loest dadurch den Windows-Release-Build aus. Erst wenn der Workflow erfolgreich durchlaeuft, steht die EXE unter https://github.com/dmdelia/gtk-vi/releases bereit.
+**Repository:** https://github.com/dmdelia/gtk-vi (main). Ein initialer Workflow liegt dort bereits. Das vollstaendige Spielprojekt kann mit `publish.ps1` (PowerShell, Git und angemeldete GitHub CLI erforderlich) gepusht werden. Das Skript erstellt danach `v0.1.4-prealpha` und loest dadurch den Windows-Release-Build aus. Erst wenn der Workflow erfolgreich durchlaeuft, steht die EXE unter https://github.com/dmdelia/gtk-vi/releases bereit.
 
 ## Integrierter Updater
 
@@ -87,3 +87,13 @@ Ab 0.1.3 fragt das Spiel beim Start `https://api.github.com/repos/dmdelia/gtk-vi
 - Der Installer prüft Dateigrößen, erstellt Backups und stellt im Fehlerfall die bisherigen Dateien wieder her.
 - Die alten Spielstände `user://savegame.json` und Einstellungen werden beim ersten Start nach der Umbenennung migriert.
 - Für bereits installierte Builds bis 0.1.2 ist wegen des dort fehlerhaften Endpunkts ein einmaliges manuelles Update nötig.
+
+## 0.1.4-prealpha: Character & Camera Overhaul
+
+- Neues organisch modelliertes Charakter-Rig `scripts/humanoid.gd`, mit anatomisch geformtem Kopf und Körper statt großformatiger Kapseln und Spielzeuggesichter.
+- Hierarchische Schulter-, Ellbogen-, Hüft- und Kniegelenke, inklusive animierter Gang-, Sprint-, Schleich- und Atembewegungen.
+- Separate **Skin- und Hair-PBR-Texturen** mit Albedo-, Normal- und Roughness-Maps (`assets/textures/skin_*`, `hair_*`).
+- Kamera folgt dem interpolierten Physik-Transform statt der ungerenderten Fixed-Timestep-Position; Maussteuerung bleibt framebasiert, Kollisionsabstand erhält getrennte Dämpfung.
+- Neue automatische Regressionstests für Figurengeometrie, Gelenke und Kamera.
+
+Die Charaktere sind weiterhin prozedural modellierte Spielfiguren, kein fotogescanntes Motion-Capture-Asset.
